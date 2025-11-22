@@ -1,6 +1,7 @@
 const galleryList = document.querySelector(".galleryList");
 const searchForm = document.getElementById("searchForm");
 const searchInput = document.getElementById("q");
+const galleryItem = document.querySelector(".galleryItem");
 const APIURL = "https://fakestoreapi.com/products";
 
 let products = [];
@@ -41,5 +42,7 @@ searchForm.addEventListener("submit", (e) => {
   );
   renderProducts(filteredProducts);
 });
+
+
 
 getProducts().then(() => renderProducts(products));

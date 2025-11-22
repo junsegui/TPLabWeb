@@ -10,25 +10,32 @@
     <title>trabajoPractico</title>
   </head>
   <body>
-    <nav>
-      <h1>Fake Shop</h1>
-      <button>🛒</button>
-    </nav>
-    <section class="searchBar">
-      <form id="searchForm" action="/search" method="get" role="search">
-        <label for="q" class="visually-hidden">Buscar productos</label>
-        <input id="q" name="q" type="search" placeholder="Search" />
-        <button type="submit">
-          <span aria-hidden="true">🔍</span>
-        </button>
-      </form>
-    </section>
-    <section class="gallery">
-      <div class="galleryHeader">
-        <h2 id="galleryTitle">Productos</h2>
-      </div>
-      <ul class="galleryList"></ul>
-    </section>
+    <header>
+      <nav>
+        <h1>Fake Shop</h1>
+        <button>🛒</button>
+      </nav>
+    </header>
+    <main>
+      <section class="searchBar">
+        <form id="searchForm" action="/search" method="get" role="search">
+          <label for="q" class="visually-hidden">Buscar productos</label>
+          <input id="q" name="q" type="search" placeholder="Search" />
+          <button type="submit">
+            <span aria-hidden="true">🔍</span>
+          </button>
+        </form>
+      </section>
+      <section class="gallery">
+        <div class="galleryHeader">
+          <h2 id="galleryTitle">Productos</h2>
+        </div>
+        <ul class="galleryList"></ul>
+      </section>
+    </main>
+    <footer id="footer">
+      <p>Fake Shop © 2024</p>
+    </footer>
     <script src="index.js"></script>
   </body>
 </html>
