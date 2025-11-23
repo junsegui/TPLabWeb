@@ -3,10 +3,27 @@ const searchForm = document.getElementById("searchForm");
 const searchInput = document.getElementById("q");
 const galleryItem = document.querySelector(".galleryItem");
 const productDetailSection = document.getElementById("productDetailSection");
+const cartButton = document.getElementById("cartButton");
 const APIURL = "https://fakestoreapi.com/products";
 
 let products = [];
 let selectedProduct = null;
+let cart = [];
+
+function groupCartItems(cartItems) {
+  const grouped = {};
+  cartItems.forEach((item) => {
+    if (!grouped[item.id]) {
+      grouped[item.id] = { ...item, quantity: 0 };
+    }
+    grouped[item.id].quantity += 1;
+  });
+  return Object.values(grouped);
+}
+
+function updateCartButton() {
+  cartButton.textContent = `🛒 Cart (${cart.length})`;
+}
 
 async function getProducts() {
   const response = await fetch(APIURL);
@@ -45,13 +62,13 @@ searchForm.addEventListener("submit", (e) => {
   renderProducts(filteredProducts);
 });
 
-function showProductDetails(product){
+function showProductDetails(product) {
   const modal = document.createElement("div");
   console.log("product in modal", product.title);
   modal.innerHTML = `
     <div class="modalContent">
       <span class="closeButton">&times;</span>
-      <img src="${product.image}" alt="${product.title}" />
+      <img class="productDetailImage" src="${product.image}" alt="${product.title}" />
       <h2>${product.title}</h2>
       <p>${product.description}</p>
       <p class="galleryItemPrice">$${product.price}</p>
@@ -60,7 +77,50 @@ function showProductDetails(product){
   `;
   modal.classList.add("modal");
   productDetailSection.appendChild(modal);
-  productDetailSection.style.display = "block";
+  productDetailSection.style.display = "flex";
+
+  const addToCartButton = modal.querySelector(".addToCartButton");
+  addToCartButton.addEventListener("click", () => {
+    cart.push(product);
+    console.log("cart", cart);
+    updateCartButton();
+    closeModal();
+  });
+}
+
+function showCartModal() {
+  closeModal();
+
+  const groupedItems = groupCartItems(cart);
+  const itemsMarkup = groupedItems.length
+    ? `<ul class="cartList">
+        ${groupedItems
+          .map(
+            (item) => `
+              <li class="cartItem">
+                <img src="${item.image}" alt="${item.title}" />
+                <div>
+                  <h3>${item.title}</h3>
+                  <p class="galleryItemPrice">$${item.price}</p>
+                  <p>Cantidad: ${item.quantity}</p>
+                </div>
+              </li>`
+          )
+          .join("")}
+      </ul>`
+    : `<p class="emptyCart">Tu carrito está vacío</p>`;
+
+  const modal = document.createElement("div");
+  modal.innerHTML = `
+    <div class="modalContent">
+      <span class="closeButton">&times;</span>
+      <h2>Carrito</h2>
+      ${itemsMarkup}
+    </div>
+  `;
+  modal.classList.add("modal");
+  productDetailSection.appendChild(modal);
+  productDetailSection.style.display = "flex";
 }
 
 function closeModal() {
@@ -71,11 +131,12 @@ function closeModal() {
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("closeButton")) {
     closeModal();
-  }});
-  
+  }
+});
+
 productDetailSection.addEventListener("focusout", (e) => {
-    closeModal();
-  });
+  closeModal();
+});
 
 document.addEventListener("mousedown", (event) => {
   if (productDetailSection && !productDetailSection.contains(event.target)) {
@@ -83,6 +144,7 @@ document.addEventListener("mousedown", (event) => {
   }
 });
 
+cartButton.addEventListener("click", showCartModal);
 
-
+updateCartButton();
 getProducts().then(() => renderProducts(products));
