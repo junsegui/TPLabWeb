@@ -15,18 +15,23 @@ let cart = [];
 
 // --- localStorage helpers ---
 function saveCartToStorage() {
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-
+  try {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  } catch (error) {
+    console.error("Error saving cart to storage", error);
+  }
 }
 
 function loadCartFromStorage() {
-
-    const raw = localStorage.getItem('cart');
+  try {
+    const raw = localStorage.getItem("cart");
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
-
+  } catch (error) {
+    console.error("Error reading cart from storage", error);
+    return [];
+  }
 }
 
 function clearCart() {
@@ -124,6 +129,7 @@ function showProductDetails(product) {
 function addToCart(product) {
   cart.push(product);
   updateCartButton();
+  saveCartToStorage();
   closeModal();
 }
 
